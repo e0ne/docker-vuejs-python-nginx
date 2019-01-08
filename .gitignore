@@ -1,0 +1,55 @@
+*.DS_Store
+*.log
+*.mo
+*.pyc
+*.sqlite
+/.*
+!.coveragerc
+!.gitignore
+!.mailmap
+!.zuul.yaml
+.*.sw?
+AUTHORS
+Authors
+build/*
+build-stamp
+CA/
+ChangeLog
+sample.egg-info/
+sample-ui/dist/
+cover/*
+covhtml
+dist/*
+instances
+keeper
+keys
+local_settings.py
+tools/lintstack.head.py
+tools/pylint_exceptions
+tags
+# Files created by Sphinx build
+doc/build
+
+# Files created by releasenotes build
+releasenotes/build
+
+node_modules
+/dist
+
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw*

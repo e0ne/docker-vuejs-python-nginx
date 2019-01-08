@@ -1,0 +1,59 @@
+version: '3'
+
+services:
+  sample-db:
+    container_name: sample-db
+    image: mysql:8
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: passw0rd
+      MYSQL_DATABASE: sample_db
+      MYSQL_USER: sample_user
+      MYSQL_PASSWORD: passw0rd
+    networks:
+      - sample-net
+  sample-api:
+    container_name: sample-api
+    build: .
+    environment:
+      - FLASK_ENV=development
+    volumes:
+      - .:/opt
+    command: ["/wait-for-it.sh", "-s", "-t", "60", "sample-db:3306", "--", "sh", "/opt/sample/bootstrap.sh"]
+    networks:
+      - sample-net
+    depends_on:
+      - sample-db
+  sample-ui:
+    container_name: sample-ui
+    build:
+      context: .
+      dockerfile: ./sample-ui/Dockerfile
+    volumes:
+      - .:/opt
+    command: ["/wait-for-it.sh", "-s", "-t", "600", "sample-api:5000", "--", "sh", "/opt/sample-ui/bootstrap.sh"]
+    networks:
+      - sample-net
+    depends_on:
+      - sample-api
+  sample-web:
+    container_name: sample-web
+    image: nginx
+    volumes:
+     - ./etc/nginx/sample.docker.template:/etc/nginx/conf.d/sample.docker.template
+    ports:
+     - "8090:80"
+    environment:
+     - NGINX_PORT=80
+    command: /bin/bash -c "envsubst < /etc/nginx/conf.d/sample.docker.template > /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'"
+    networks:
+      - sample-net
+    depends_on:
+      - sample-api
+      - sample-ui
+volumes:
+  db_data:
+networks:
+  sample-net:

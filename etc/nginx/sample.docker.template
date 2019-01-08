@@ -1,0 +1,9 @@
+server {
+    client_max_body_size 10M;
+    location /api/ {
+        proxy_pass http://sample-api:5000/api/;
+    }
+    location / {
+        proxy_pass http://sample-ui:8080/;
+    }
+}
